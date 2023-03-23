@@ -6,11 +6,27 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:12:55 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/21 15:17:16 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/23 19:20:36 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+void	free_for_all(t_ph **ph)
+{
+	free(*ph);
+}
+
+long int	get_time(t_ph **ph)
+{
+	struct timeval	t1;
+	long int		ret;
+
+	gettimeofday(&t1, NULL);
+	ret = ((t1.tv_sec - (*ph)->time_start) * 1000000
+			+ (t1.tv_usec - (*ph)->time_ustart)) / 1000;
+	return (ret);
+}
 
 int	ft_atoi(const char *str)
 {

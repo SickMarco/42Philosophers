@@ -1,6 +1,6 @@
 NAME = philo
 
-SRC = main.c utils.c
+SRC = main.c utils.c threads.c
 
 SRC_DIR = ./Src/
 
