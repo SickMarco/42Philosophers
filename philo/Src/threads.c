@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:00:31 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/23 19:27:48 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/24 16:15:20 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@ void	*a_dumb_philo(void *arg)
 	t_dumb	*d;
 
 	d = (t_dumb *)arg;
-	pthread_mutex_lock(&d->ph->forks[1]);
-	int i = -1;
-	while (++i < 4)
+	if (d->id % 2 == 0)
+		usleep(10000);
+	while (1)
 	{
-		printf("%ld %d is a ktm\n", get_time(&d->ph), d->id);
-		sleep(1);
+		get_fork(&d);
+		sleeping(&d);
+		print_status(&d, 'T');
 	}
-	pthread_mutex_unlock(&d->ph->forks[1]);
 	return (0);
 }
 
@@ -33,10 +33,7 @@ void	philos_thread(t_ph **ph)
 	int	i;
 
 	i = -1;
-	(*ph)->forks = ft_calloc(sizeof(pthread_mutex_t), ((*ph)->nphilo + 1));
-	while (++i < (*ph)->nphilo)
-		pthread_mutex_init(&(*ph)->forks[i], NULL);
-	i = -1;
+	pthread_mutex_init(&(*ph)->print, NULL);
 	while (++i < (*ph)->nphilo)
 	{
 		if (pthread_create(&(*ph)->th[i], NULL, &a_dumb_philo, &(*ph)->dumb[i]))
@@ -48,4 +45,5 @@ void	philos_thread(t_ph **ph)
 	i = -1;
 	while (++i < (*ph)->nphilo)
 		pthread_mutex_destroy(&(*ph)->forks[i]);
+	pthread_mutex_destroy(&(*ph)->print);
 }
