@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:00:31 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/24 16:15:20 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/26 19:48:14 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	*a_dumb_philo(void *arg)
 		get_fork(&d);
 		sleeping(&d);
 		print_status(&d, 'T');
+		if (d->stop)
+			break	;
 	}
 	return (0);
 }
@@ -33,17 +35,16 @@ void	philos_thread(t_ph **ph)
 	int	i;
 
 	i = -1;
-	pthread_mutex_init(&(*ph)->print, NULL);
 	while (++i < (*ph)->nphilo)
-	{
 		if (pthread_create(&(*ph)->th[i], NULL, &a_dumb_philo, &(*ph)->dumb[i]))
-			printf("Thread Error\n");
-	}
+			write(STDERR_FILENO, "Thread Error\n", 14);
 	i = -1;
+	death(ph);
 	while (++i < (*ph)->nphilo)
 		pthread_join((*ph)->th[i], NULL);
 	i = -1;
 	while (++i < (*ph)->nphilo)
 		pthread_mutex_destroy(&(*ph)->forks[i]);
 	pthread_mutex_destroy(&(*ph)->print);
+	pthread_mutex_destroy(&(*ph)->det);
 }
