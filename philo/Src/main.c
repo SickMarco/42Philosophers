@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:46:23 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/26 19:39:40 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/26 23:05:47 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,14 @@ void	philo_struct_init(t_ph **ph, int ac, char **av)
 		(*ph)->dumb[i].tt_die = ft_atoi(av[2]);
 		(*ph)->dumb[i].tt_eat = ft_atoi(av[3]);
 		(*ph)->dumb[i].tt_sleep = ft_atoi(av[4]);
-		(*ph)->dumb[i].e_meals = 0;
 		(*ph)->dumb[i].time_start = ts.tv_sec;
 		(*ph)->dumb[i].time_ustart = ts.tv_usec;
 		(*ph)->dumb[i].print = &(*ph)->print;
-		(*ph)->dumb[i].stop = 0;
+		(*ph)->dumb[i].e_meals = 1;
 		if (ac == 6)
 			(*ph)->dumb[i].meals = ft_atoi(av[5]);
 		else
-			(*ph)->dumb[i].meals = 1;
+			(*ph)->dumb[i].meals = 0;
 		philo_fork_set(ph, i);
 	}
 }
@@ -68,7 +67,6 @@ void	philo_init(t_ph **ph, int ac, char **av)
 	(*ph)->th = malloc(sizeof(pthread_t) * ((*ph)->nphilo));
 	(*ph)->forks = ft_calloc(sizeof(pthread_mutex_t), ((*ph)->nphilo));
 	pthread_mutex_init(&(*ph)->print, NULL);
-	pthread_mutex_init(&(*ph)->det, NULL);
 	while (++i < (*ph)->nphilo)
 		pthread_mutex_init(&(*ph)->forks[i], NULL);
 	philo_struct_init(ph, ac, av);

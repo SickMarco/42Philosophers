@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:41:50 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/26 19:39:20 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/26 23:05:54 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct s_dumb{
 	long int				last_m;
 	suseconds_t				time_ustart;
 	time_t					time_start;
-	int						stop;
 	pthread_mutex_t			*left_f;
 	pthread_mutex_t			*right_f;
 	pthread_mutex_t			*print;
@@ -40,12 +39,10 @@ typedef struct s_dumb{
 
 typedef struct s_ph{
 	t_dumb					*dumb;
-	int						dead;
 	int						nphilo;
 	pthread_t				*th;
 	pthread_mutex_t			*forks;
 	pthread_mutex_t			print;
-	pthread_mutex_t			det;
 }				t_ph;
 
 //			PHILO			//
@@ -59,7 +56,6 @@ long int	get_time(t_dumb **d);
 void		print_status(t_dumb **d, char flag);
 void		get_fork(t_dumb **d);
 void		sleeping(t_dumb **d);
-void		death(t_ph **ph);
 
 //			UTILS			//
 

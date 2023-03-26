@@ -6,11 +6,25 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:00:31 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/26 19:48:14 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/26 23:05:49 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+int	alive(t_dumb **d)
+{
+	if ((*d)->tt_die < (get_time(d) - (*d)->last_m))
+	{
+		print_status(d, 'D');
+		return (0);
+	}
+	else if (!(*d)->meals)
+		return (1);
+	else if ((*d)->meals < (*d)->e_meals)
+		return (0);
+	return (1);
+}
 
 void	*a_dumb_philo(void *arg)
 {
@@ -19,13 +33,12 @@ void	*a_dumb_philo(void *arg)
 	d = (t_dumb *)arg;
 	if (d->id % 2 == 0)
 		usleep(10000);
-	while (1)
+	while (alive(&d))
 	{
 		get_fork(&d);
 		sleeping(&d);
-		print_status(&d, 'T');
-		if (d->stop)
-			break	;
+		if (++d->e_meals > d->meals)
+			print_status(&d, 'T');
 	}
 	return (0);
 }
@@ -39,12 +52,10 @@ void	philos_thread(t_ph **ph)
 		if (pthread_create(&(*ph)->th[i], NULL, &a_dumb_philo, &(*ph)->dumb[i]))
 			write(STDERR_FILENO, "Thread Error\n", 14);
 	i = -1;
-	death(ph);
 	while (++i < (*ph)->nphilo)
 		pthread_join((*ph)->th[i], NULL);
 	i = -1;
 	while (++i < (*ph)->nphilo)
 		pthread_mutex_destroy(&(*ph)->forks[i]);
 	pthread_mutex_destroy(&(*ph)->print);
-	pthread_mutex_destroy(&(*ph)->det);
 }
