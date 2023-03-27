@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:12:55 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/25 19:33:38 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/27 18:55:26 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,17 @@ void	free_for_all(t_ph **ph)
 	free((*ph)->th);
 	free((*ph)->forks);
 	free(*ph);
+}
+
+long int	get_time2(t_ph **ph)
+{
+	struct timeval	t1;
+	long int		ret;
+
+	gettimeofday(&t1, NULL);
+	ret = ((t1.tv_sec - (*ph)->time_start) * 1000
+			+ (t1.tv_usec - (*ph)->time_ustart) / 1000);
+	return (ret);
 }
 
 long int	get_time(t_dumb **d)
