@@ -6,85 +6,67 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:04:22 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 15:57:14 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/28 19:16:32 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	print_status(t_dumb **d, char flag)
+void	status(long int time, int id, pthread_mutex_t *print, char flag)
 {
-	pthread_mutex_lock((*d)->death);
-	pthread_mutex_lock((*d)->print);
-	if (*(*d)->status == 0)
+	static int	blk = 0;
+
+	pthread_mutex_lock(print);
+	if (flag == 'D' && blk == 0)
 	{
-		pthread_mutex_unlock((*d)->print);
-		pthread_mutex_unlock((*d)->death);
-		return ;
+		printf("\033[0;31m%ld %d died\n", time, id);
+		blk = 1;
 	}
-	pthread_mutex_unlock((*d)->death);
-	if (flag == 'T')
-		printf("\033[0;32m%ld %d is thinking\n", get_time((*d)->time_s,
-				(*d)->time_u), (*d)->id);
-	else if (flag == 'E')
-		printf("\033[0;33m%ld %d is eating\n", get_time((*d)->time_s,
-				(*d)->time_u), (*d)->id);
-	else if (flag == 'F')
-		printf("\033[0;36m%ld %d has taken a fork\n", get_time((*d)->time_s,
-				(*d)->time_u), (*d)->id);
-	else if (flag == 'S')
-		printf("\033[0;35m%ld %d is sleeping\n", get_time((*d)->time_s,
-				(*d)->time_u), (*d)->id);
-	pthread_mutex_unlock((*d)->print);
+	if (flag == 'T' && blk == 0)
+		printf("\033[0;32m%ld %d is thinking\n", time, id);
+	else if (flag == 'E' && blk == 0)
+		printf("\033[0;33m%ld %d is eating\n", time, (id));
+	else if (flag == 'F' && blk == 0)
+		printf("\033[0;36m%ld %d has taken a fork\n", time, id);
+	else if (flag == 'S' && blk == 0)
+		printf("\033[0;35m%ld %d is sleeping\n", time, id);
+	pthread_mutex_unlock(print);
 }
 
 void	eating(t_dumb **d)
 {
-	print_status(d, 'E');
+	long int	tmp;
+
+	status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'E');
+	tmp = get_time((*d)->ts, (*d)->tu);
 	pthread_mutex_lock((*d)->death);
-	(*d)->last_arr[(*d)->id - 1] = get_time((*d)->time_s,
-			(*d)->time_u);
+	(*d)->last_arr[(*d)->id - 1] = tmp;
 	pthread_mutex_unlock((*d)->death);
 	usleep((*d)->tt_eat * 1000);
 }
 
 void	get_fork(t_dumb **d)
 {
-	if ((*d)->id == (*d)->nphilo)
+	if ((*d)->id == (*d)->nphilo && (*d)->id % 2 != 0 && (*d)->id != 1)
 	{
 		pthread_mutex_lock((*d)->right_f);
-		print_status(d, 'F');
+		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		pthread_mutex_lock((*d)->left_f);
-		print_status(d, 'F');
+		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		eating(d);
-		pthread_mutex_unlock((*d)->left_f);
 		pthread_mutex_unlock((*d)->right_f);
+		pthread_mutex_unlock((*d)->left_f);
 	}
 	else
 	{
 		pthread_mutex_lock((*d)->left_f);
-		print_status(d, 'F');
+		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		pthread_mutex_lock((*d)->right_f);
-		print_status(d, 'F');
+		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		eating(d);
 		pthread_mutex_unlock((*d)->left_f);
 		pthread_mutex_unlock((*d)->right_f);
 	}
-}
-
-int	alive(t_dumb **d)
-{
-	if ((*d)->meals != 0)
-	{
-		if (++(*d)->e_meals == (*d)->meals)
-		{
-			pthread_mutex_lock((*d)->death);
-			*((*d)->status) = 0;
-			pthread_mutex_unlock((*d)->death);
-			return (0);
-		}
-	}
-	return (1);
 }
 
 void	death(t_ph **ph)
@@ -97,20 +79,16 @@ void	death(t_ph **ph)
 		if (++i == (*ph)->nphilo)
 			i = 0;
 		pthread_mutex_lock(&(*ph)->death);
-		if (!(*ph)->status)
+		if ((*ph)->status == 0)
 			break ;
-		if ((long)(*ph)->tt_die < (get_time((*ph)->time_s,
-					(*ph)->time_u) - (*ph)->last[i]))
+		if ((*ph)->tt_die < (get_time((*ph)->tse, (*ph)->tu) - (*ph)->last[i]))
 		{
 			(*ph)->status = 0;
-			pthread_mutex_lock(&(*ph)->print);
-			printf("\033[0;31m%ld %d died\n", get_time((*ph)->time_s,
-					(*ph)->time_u), (i + 1));
-			pthread_mutex_unlock(&(*ph)->print);
+			status(get_time((*ph)->tse, (*ph)->tu), i + 1, &(*ph)->print, 'D');
 			break ;
 		}
 		pthread_mutex_unlock(&(*ph)->death);
-		usleep(1000);
+		usleep(5000);
 	}
 	pthread_mutex_unlock(&(*ph)->death);
 }

@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:46:23 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 15:43:38 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/28 19:17:24 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	philo_struct_init(t_ph **ph, int ac, char **av)
 		(*ph)->dumb[i].tt_die = ft_atoi(av[2]);
 		(*ph)->dumb[i].tt_eat = ft_atoi(av[3]);
 		(*ph)->dumb[i].tt_sleep = ft_atoi(av[4]);
-		(*ph)->dumb[i].time_s = (*ph)->ts.tv_sec;
-		(*ph)->dumb[i].time_u = (*ph)->ts.tv_usec;
+		(*ph)->dumb[i].ts = (*ph)->ts.tv_sec;
+		(*ph)->dumb[i].tu = (*ph)->ts.tv_usec;
 		(*ph)->dumb[i].print = &(*ph)->print;
 		(*ph)->dumb[i].e_meals = 0;
 		(*ph)->dumb[i].death = &(*ph)->death;
@@ -64,8 +64,8 @@ int	philo_init(t_ph **ph, int ac, char **av)
 	if ((*ph)->nphilo == 1)
 		return (printf("\033[0;31m%d 1 died\n", (*ph)->tt_die));
 	gettimeofday(&(*ph)->ts, NULL);
-	(*ph)->time_s = (*ph)->ts.tv_sec;
-	(*ph)->time_u = (*ph)->ts.tv_usec;
+	(*ph)->tse = (*ph)->ts.tv_sec;
+	(*ph)->tu = (*ph)->ts.tv_usec;
 	(*ph)->last = ft_calloc(sizeof(long int), ((*ph)->nphilo));
 	(*ph)->th = ft_calloc(sizeof(pthread_t), ((*ph)->nphilo));
 	(*ph)->forks = ft_calloc(sizeof(pthread_mutex_t), ((*ph)->nphilo));

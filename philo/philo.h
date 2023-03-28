@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:41:50 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 15:42:57 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/28 19:17:15 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ typedef struct s_dumb{
 	int						meals;
 	int						e_meals;
 	long int				last_m;
-	suseconds_t				time_u;
-	time_t					time_s;
+	suseconds_t				tu;
+	time_t					ts;
 	pthread_mutex_t			*left_f;
 	pthread_mutex_t			*right_f;
 	pthread_mutex_t			*print;
@@ -47,24 +47,23 @@ typedef struct s_ph{
 	pthread_mutex_t			*forks;
 	pthread_mutex_t			print;
 	pthread_mutex_t			death;
-	suseconds_t				time_u;
-	time_t					time_s;
+	struct timeval			ts;
+	time_t					tse;
+	suseconds_t				tu;
 	int						tt_die;
 	int						status;
 	long int				*last;
-	struct timeval			ts;
 }				t_ph;
 
 //			PHILO			//
 
 void		philos_thread(t_ph **ph);
 void		*a_dumb_philo(void *arg);
-int			alive(t_dumb **d);
 void		death(t_ph **ph);
 
 //			ACTIONS			//
 
-void		print_status(t_dumb **d, char flag);
+void		status(long int time, int id, pthread_mutex_t *print, char flag);
 void		get_fork(t_dumb **d);
 void		sleeping(t_dumb **d);
 

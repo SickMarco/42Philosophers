@@ -6,11 +6,33 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:00:31 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 15:37:35 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/28 19:24:23 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+int	alive(t_dumb **d)
+{
+	if ((*d)->meals != 0)
+	{
+		if (++(*d)->e_meals == (*d)->meals)
+		{
+			pthread_mutex_lock((*d)->death);
+			*((*d)->status) = 0;
+			pthread_mutex_unlock((*d)->death);
+			return (0);
+		}
+	}
+	pthread_mutex_lock((*d)->death);
+	if (*((*d)->status) == 0)
+	{
+		pthread_mutex_unlock((*d)->death);
+		return (0);
+	}
+	pthread_mutex_unlock((*d)->death);
+	return (1);
+}
 
 void	*a_dumb_philo(void *arg)
 {
@@ -18,13 +40,13 @@ void	*a_dumb_philo(void *arg)
 
 	d = (t_dumb *)arg;
 	if (d->id % 2 == 0)
-		usleep(10000);
-	while (*(d->status) != 0)
+		usleep(1000);
+	while (1)
 	{
 		get_fork(&d);
-		print_status(&d, 'S');
+		status(get_time(d->ts, d->tu), d->id, d->print, 'S');
 		usleep((*d).tt_sleep * 1000);
-		print_status(&d, 'T');
+		status(get_time(d->ts, d->tu), d->id, d->print, 'T');
 		if (!alive(&d))
 			break ;
 	}
