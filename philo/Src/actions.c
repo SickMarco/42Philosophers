@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:04:22 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 19:16:32 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/29 13:28:52 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ void	eating(t_dumb **d)
 
 void	get_fork(t_dumb **d)
 {
-	if ((*d)->id == (*d)->nphilo && (*d)->id % 2 != 0 && (*d)->id != 1)
+	if ((*d)->id % 2 != 0)
 	{
-		pthread_mutex_lock((*d)->right_f);
-		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		pthread_mutex_lock((*d)->left_f);
+		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
+		pthread_mutex_lock((*d)->right_f);
 		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		eating(d);
 		pthread_mutex_unlock((*d)->right_f);
@@ -59,9 +59,9 @@ void	get_fork(t_dumb **d)
 	}
 	else
 	{
-		pthread_mutex_lock((*d)->left_f);
-		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		pthread_mutex_lock((*d)->right_f);
+		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
+		pthread_mutex_lock((*d)->left_f);
 		status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'F');
 		eating(d);
 		pthread_mutex_unlock((*d)->left_f);
@@ -88,7 +88,7 @@ void	death(t_ph **ph)
 			break ;
 		}
 		pthread_mutex_unlock(&(*ph)->death);
-		usleep(5000);
+		usleep(10000);
 	}
 	pthread_mutex_unlock(&(*ph)->death);
 }

@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:00:31 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 19:24:23 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/29 14:47:25 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	alive(t_dumb **d)
 		}
 	}
 	pthread_mutex_lock((*d)->death);
-	if (*((*d)->status) == 0)
+	if (*((*d)->status) == 0 && (*d)->e_meals >= (*d)->meals)
 	{
 		pthread_mutex_unlock((*d)->death);
 		return (0);
@@ -40,7 +40,7 @@ void	*a_dumb_philo(void *arg)
 
 	d = (t_dumb *)arg;
 	if (d->id % 2 == 0)
-		usleep(1000);
+		usleep(5000);
 	while (1)
 	{
 		get_fork(&d);
