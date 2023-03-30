@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 18:00:31 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/29 14:47:25 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/30 19:22:37 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,23 @@
 
 int	alive(t_dumb **d)
 {
-	if ((*d)->meals != 0)
+	int	ret;
+
+	pthread_mutex_lock((*d)->death);
+	ret = 1;
+	if ((*d)->meals)
 	{
 		if (++(*d)->e_meals == (*d)->meals)
 		{
-			pthread_mutex_lock((*d)->death);
 			*((*d)->status) = 0;
-			pthread_mutex_unlock((*d)->death);
-			return (0);
+			ret = 0;
 		}
 	}
-	pthread_mutex_lock((*d)->death);
-	if (*((*d)->status) == 0 && (*d)->e_meals >= (*d)->meals)
-	{
-		pthread_mutex_unlock((*d)->death);
-		return (0);
-	}
+	else if (!(*d)->meals)
+		if (*((*d)->status) == 0)
+			ret = 0;
 	pthread_mutex_unlock((*d)->death);
-	return (1);
+	return (ret);
 }
 
 void	*a_dumb_philo(void *arg)
@@ -39,13 +38,18 @@ void	*a_dumb_philo(void *arg)
 	t_dumb	*d;
 
 	d = (t_dumb *)arg;
+	if (d->nphilo == 1)
+	{
+		status(get_time(d->ts, d->tu), d->id, d->print, 'F');
+		return (0);
+	}
 	if (d->id % 2 == 0)
 		usleep(5000);
 	while (1)
 	{
 		get_fork(&d);
 		status(get_time(d->ts, d->tu), d->id, d->print, 'S');
-		usleep((*d).tt_sleep * 1000);
+		go_to_sleep(&d, d->tt_sleep);
 		status(get_time(d->ts, d->tu), d->id, d->print, 'T');
 		if (!alive(&d))
 			break ;

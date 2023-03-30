@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 15:12:55 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 15:44:45 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/30 18:05:17 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	free_for_all(t_ph **ph)
 	free((*ph)->dumb);
 	free((*ph)->th);
 	free((*ph)->forks);
+	free((*ph)->last);
 	free(*ph);
 }
 

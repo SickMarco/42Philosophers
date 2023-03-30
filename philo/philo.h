@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:41:50 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 19:17:15 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/30 19:20:57 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void		death(t_ph **ph);
 
 void		status(long int time, int id, pthread_mutex_t *print, char flag);
 void		get_fork(t_dumb **d);
-void		sleeping(t_dumb **d);
+void		go_to_sleep(t_dumb **d, int type);
 
 //			UTILS			//
 

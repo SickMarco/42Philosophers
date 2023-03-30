@@ -6,25 +6,11 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:46:23 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/28 19:17:24 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/30 19:26:50 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-
-void	philo_fork_set(t_ph **ph, int i)
-{
-	if ((*ph)->dumb[i].id == (*ph)->nphilo)
-	{
-		(*ph)->dumb[i].left_f = &(*ph)->forks[(*ph)->nphilo - 1];
-		(*ph)->dumb[i].right_f = &(*ph)->forks[0];
-	}
-	else
-	{
-		(*ph)->dumb[i].left_f = &(*ph)->forks[(*ph)->dumb[i].id - 1];
-		(*ph)->dumb[i].right_f = &(*ph)->forks[(*ph)->dumb[i].id];
-	}
-}
 
 void	philo_struct_init(t_ph **ph, int ac, char **av)
 {
@@ -41,14 +27,15 @@ void	philo_struct_init(t_ph **ph, int ac, char **av)
 		(*ph)->dumb[i].ts = (*ph)->ts.tv_sec;
 		(*ph)->dumb[i].tu = (*ph)->ts.tv_usec;
 		(*ph)->dumb[i].print = &(*ph)->print;
-		(*ph)->dumb[i].e_meals = 0;
 		(*ph)->dumb[i].death = &(*ph)->death;
 		(*ph)->dumb[i].status = &(*ph)->status;
-		(*ph)->dumb[i].last_arr = (*ph)->last;
 		(*ph)->dumb[i].meals = 0;
+		(*ph)->dumb[i].e_meals = 0;
+		(*ph)->dumb[i].last_arr = (*ph)->last;
+		(*ph)->dumb[i].left_f = &(*ph)->forks[i];
+		(*ph)->dumb[i].right_f = &(*ph)->forks[(i + 1) % (*ph)->nphilo];
 		if (ac == 6)
 			(*ph)->dumb[i].meals = ft_atoi(av[5]);
-		philo_fork_set(ph, i);
 	}
 }
 
@@ -61,13 +48,11 @@ int	philo_init(t_ph **ph, int ac, char **av)
 		return (1);
 	(*ph)->nphilo = ft_atoi(av[1]);
 	(*ph)->tt_die = ft_atoi(av[2]);
-	if ((*ph)->nphilo == 1)
-		return (printf("\033[0;31m%d 1 died\n", (*ph)->tt_die));
 	gettimeofday(&(*ph)->ts, NULL);
 	(*ph)->tse = (*ph)->ts.tv_sec;
 	(*ph)->tu = (*ph)->ts.tv_usec;
-	(*ph)->last = ft_calloc(sizeof(long int), ((*ph)->nphilo));
-	(*ph)->th = ft_calloc(sizeof(pthread_t), ((*ph)->nphilo));
+	(*ph)->last = ft_calloc(sizeof(long int), (*ph)->nphilo);
+	(*ph)->th = ft_calloc(sizeof(pthread_t), (*ph)->nphilo);
 	(*ph)->forks = ft_calloc(sizeof(pthread_mutex_t), ((*ph)->nphilo));
 	(*ph)->dumb = ft_calloc(sizeof(t_dumb), (*ph)->nphilo);
 	(*ph)->status = 1;
