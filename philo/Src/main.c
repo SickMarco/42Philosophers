@@ -6,11 +6,25 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:46:23 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/30 19:26:50 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/30 22:14:44 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+void	philo_fork_init(t_ph **ph, int i)
+{
+	if ((*ph)->dumb[i].id == (*ph)->nphilo)
+	{
+		(*ph)->dumb[i].left_f = &(*ph)->forks[0];
+		(*ph)->dumb[i].right_f = &(*ph)->forks[i];
+	}
+	else
+	{
+		(*ph)->dumb[i].left_f = &(*ph)->forks[i];
+		(*ph)->dumb[i].right_f = &(*ph)->forks[i + 1];
+	}
+}
 
 void	philo_struct_init(t_ph **ph, int ac, char **av)
 {
@@ -32,10 +46,9 @@ void	philo_struct_init(t_ph **ph, int ac, char **av)
 		(*ph)->dumb[i].meals = 0;
 		(*ph)->dumb[i].e_meals = 0;
 		(*ph)->dumb[i].last_arr = (*ph)->last;
-		(*ph)->dumb[i].left_f = &(*ph)->forks[i];
-		(*ph)->dumb[i].right_f = &(*ph)->forks[(i + 1) % (*ph)->nphilo];
 		if (ac == 6)
 			(*ph)->dumb[i].meals = ft_atoi(av[5]);
+		philo_fork_init(ph, i);
 	}
 }
 
