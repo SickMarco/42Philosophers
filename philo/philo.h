@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:41:50 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/30 19:20:57 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/31 12:29:33 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct s_ph{
 
 //			PHILO			//
 
-void		philos_thread(t_ph **ph);
+int			philos_thread(t_ph **ph);
 void		*a_dumb_philo(void *arg);
 void		death(t_ph **ph);
 

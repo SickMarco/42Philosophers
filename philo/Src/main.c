@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 18:46:23 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/30 22:14:44 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/31 12:30:48 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,11 @@ int	philo_init(t_ph **ph, int ac, char **av)
 {
 	int	i;
 
-	i = -1;
 	if (check_input(av))
 		return (1);
+	gettimeofday(&(*ph)->ts, NULL);
 	(*ph)->nphilo = ft_atoi(av[1]);
 	(*ph)->tt_die = ft_atoi(av[2]);
-	gettimeofday(&(*ph)->ts, NULL);
 	(*ph)->tse = (*ph)->ts.tv_sec;
 	(*ph)->tu = (*ph)->ts.tv_usec;
 	(*ph)->last = ft_calloc(sizeof(long int), (*ph)->nphilo);
@@ -69,10 +68,11 @@ int	philo_init(t_ph **ph, int ac, char **av)
 	(*ph)->forks = ft_calloc(sizeof(pthread_mutex_t), ((*ph)->nphilo));
 	(*ph)->dumb = ft_calloc(sizeof(t_dumb), (*ph)->nphilo);
 	(*ph)->status = 1;
-	pthread_mutex_init(&(*ph)->print, NULL);
-	pthread_mutex_init(&(*ph)->death, NULL);
+	i = -1;
 	while (++i < (*ph)->nphilo)
 		pthread_mutex_init(&(*ph)->forks[i], NULL);
+	pthread_mutex_init(&(*ph)->print, NULL);
+	pthread_mutex_init(&(*ph)->death, NULL);
 	philo_struct_init(ph, ac, av);
 	return (0);
 }
@@ -85,11 +85,11 @@ int	main(int ac, char **av)
 	{
 		ph = ft_calloc(sizeof(t_ph), 1);
 		if (philo_init(&ph, ac, av))
-			return (0);
-		philos_thread(&ph);
-		free_for_all(&ph);
+			return (EXIT_FAILURE);
+		if (!philos_thread(&ph))
+			free_for_all(&ph);
 	}
 	else
 		write(STDERR_FILENO, "\033[0;31mInsert valid arguments\n", 31);
-	return (0);
+	return (EXIT_SUCCESS);
 }
