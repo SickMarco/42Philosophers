@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:04:22 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/31 13:11:45 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/31 13:56:12 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,10 @@ void	status(long int time, int id, pthread_mutex_t *print, char flag)
 
 void	eating(t_dumb **d)
 {
-	long int	tmp;
-
-	tmp = get_time((*d)->ts, (*d)->tu);
-	status(tmp, (*d)->id, (*d)->print, 'E');
 	pthread_mutex_lock((*d)->death);
-	(*d)->last_arr[(*d)->id - 1] = tmp;
+	(*d)->last_arr[(*d)->id - 1] = get_time((*d)->ts, (*d)->tu);
 	pthread_mutex_unlock((*d)->death);
+	status(get_time((*d)->ts, (*d)->tu), (*d)->id, (*d)->print, 'E');
 	go_to_sleep(d, (*d)->tt_eat);
 }
 
@@ -73,8 +70,8 @@ void	death(t_ph **ph)
 	while (1)
 	{
 		i = -1;
-		time = get_time((*ph)->tse, (*ph)->tu);
 		pthread_mutex_lock(&(*ph)->death);
+		time = get_time((*ph)->tse, (*ph)->tu);
 		if ((*ph)->status == 0)
 			break ;
 		while (++i < (*ph)->nphilo)
