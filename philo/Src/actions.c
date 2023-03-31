@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 17:04:22 by mbozzi            #+#    #+#             */
-/*   Updated: 2023/03/30 18:14:46 by mbozzi           ###   ########.fr       */
+/*   Updated: 2023/03/31 13:11:45 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	death(t_ph **ph)
 			}
 		}
 		pthread_mutex_unlock(&(*ph)->death);
-		usleep(10000);
+		usleep(5000);
 	}
 	pthread_mutex_unlock(&(*ph)->death);
 }
