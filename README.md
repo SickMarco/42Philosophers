@@ -15,7 +15,8 @@ It was originally formulated in 1965 by Edsger Dijkstra as a student exam exerci
 
 Data races are a common problem in multithreaded programming. Data races occur when multiple tasks or threads access a shared resource without sufficient protections, leading to undefined or unpredictable behavior.
 A mutual exclusion (mutex) is used cooperatively between threads to ensure that only one of the cooperating threads is allowed to access the data or run certain application code at a time.
-You can check date races via a Valgrind tool called [Helgrind](https://valgrind.org/docs/manual/hg-manual.html) with the command :
+
+### You can check date races via a Valgrind tool called [Helgrind](https://valgrind.org/docs/manual/hg-manual.html) with the command :
 ```
 valgrind --tool=helgrind
 ```
